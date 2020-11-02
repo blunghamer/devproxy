@@ -13,5 +13,5 @@ jobs:
     - uses: wangyoucao577/go-release-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        goos: linux
+        goos: [linux, windows]
         goarch: amd64
