@@ -2,8 +2,8 @@
 
 ## Overview
  
-Tired of reconfiguring your tools when connected and disconnected from your corporate intranet with a mandatory proxy server? 
-Just point your tools to devproxy and switch proxy target dependent on environment, and never reconfigure your proxy again.
+Tired of reconfiguring your tools when being connected and disconnected frequently from your corporate intranet with a mandatory proxy server? 
+Just point your tools to devproxy and switch the proxy target dependent on environment, and never reconfigure your proxy again.
 
 In direct mode the proxy directly breaks out to the internet, in chaining mode the proxy connects to upstream corporate proxies 
 with authentication.
