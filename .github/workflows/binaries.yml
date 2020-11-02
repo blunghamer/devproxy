@@ -1,3 +1,5 @@
+name: releases
+
 on: 
   release:
     types: [created]
