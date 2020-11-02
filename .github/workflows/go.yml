@@ -35,5 +35,5 @@ jobs:
     - name: Build Windows
       run: go build -v cmd/devproxy/main.go
 
-    - name: Test
-      run: go test -v .
+#    - name: Test
+#      run: go test -v .
