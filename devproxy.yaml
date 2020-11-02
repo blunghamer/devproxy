@@ -1,0 +1,18 @@
+bindto: 0.0.0.0:3128
+# required for keyring storage
+appname: dev-proxy
+# credentials for proxy
+proxyuser: lb4770
+#httpproxy: http://localhost:8082
+#httpsproxy: http://localhost:8082
+#this works on windows / on premise
+#httpproxy: http://10.171.21.21:3129
+#httpsproxy: http://10.171.21.21:3129
+#use this on linux / in vpn directly on linux host
+httpproxy: http://10.171.21.11:3129
+httpsproxy: http://10.171.21.11:3129
+
+# this is https only test connect
+httpstest: https://www.google.com
+# this will never use https / test proxied request
+httptest: http://neverssl.com

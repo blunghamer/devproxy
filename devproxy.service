@@ -1,0 +1,8 @@
+[Unit]
+Description=devproxy for http proxy server in intranet and direct cases
+
+[Service]
+ExecStart=devproxy auto
+
+[Install]
+WantedBy=default.target
