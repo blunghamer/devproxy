@@ -10,7 +10,7 @@ with authentication.
 
 ## Credentials
 
-`devproxy creds` set and encrypt passwords for the corporate proxy 
+`devproxy cred` set and encrypt passwords for the corporate proxy 
 
 ## Running
 
