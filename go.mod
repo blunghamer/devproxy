@@ -1,8 +1,8 @@
 module github.com/blunghamer/devproxy
 
 go 1.15
-
-replace github.com/elazarl/goproxy => github.com/blunghamer/goproxy v0.0.0-20200829102833-ad1ea8cd5e16
+                                                                                          
+replace github.com/elazarl/goproxy => github.com/blunghamer/goproxy v0.0.0-20201107215641-a0ef4c6459e2
 
 require (
 	github.com/elazarl/goproxy v0.0.0-20201021153353-00ad82a08272

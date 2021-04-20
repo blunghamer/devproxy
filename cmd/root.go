@@ -27,23 +27,24 @@ func init() {
 }
 
 func initConfig() {
-	viper.SetConfigName("devproxy")
+	toolname := "devproxy"
+	viper.SetConfigName(toolname)
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
-	viper.AddConfigPath("/etc/devproxy/")
-	viper.AddConfigPath("$HOME/.devproxy")
+	viper.AddConfigPath(fmt.Sprintf("/etc/%v/", toolname))
+	viper.AddConfigPath(fmt.Sprintf("$HOME/.%v", toolname))
 
 	viper.AutomaticEnv()
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		panic(fmt.Errorf("Fatal error config file: %s", err))
+		log.Fatalf("fatal error in readinconfig: %s, config %v", err, viper.ConfigFileUsed())
 	}
 
 	log.Println("Conf file read", viper.AllKeys())
 	err = viper.Unmarshal(&config)
 	if err != nil {
-		panic(fmt.Errorf("Fatal error mashalling config file: %s", err))
+		log.Fatalf("fatal error unmarshalling config file: %s", err)
 	}
 
 	home, err := os.UserHomeDir()
@@ -51,7 +52,7 @@ func initConfig() {
 		log.Fatal("Unable to find home directory", err)
 	}
 
-	keystorefile := home + "/.devproxy.yaml"
+	keystorefile := fmt.Sprintf("%v/.%v.yaml", home, toolname)
 
 	if _, err := os.Stat(keystorefile); os.IsNotExist(err) {
 		log.Println("Devproxy key file does not exist, please run devproxy cred before running")

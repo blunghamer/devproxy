@@ -1,5 +1,5 @@
 [Unit]
-Description=devproxy for http proxy server in intranet and direct cases
+Description=devproxy routing directly out or via corporate proxy
 
 [Service]
 ExecStart=devproxy auto

@@ -26,8 +26,8 @@ func NewDirectProxyHTTPServer() *goproxy.ProxyHttpServer {
 
 var runDirect = &cobra.Command{
 	Use:   "direct",
-	Short: "run direct proxy to internet",
-	Long:  `run direct proxy to internet`,
+	Short: "direct proxy to internet",
+	Long:  `direct proxy to internet`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// log.Print(viper.AllSettings())
 		endProxy := NewDirectProxyHTTPServer()

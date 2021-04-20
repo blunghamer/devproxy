@@ -18,8 +18,8 @@ func init() {
 
 var runAuto = &cobra.Command{
 	Use:   "auto",
-	Short: "run auto proxy to internet",
-	Long:  `run auto proxy to internet`,
+	Short: "choose proxy automatically",
+	Long:  `choose proxy automatically`,
 	Run: func(cmd *cobra.Command, args []string) {
 		ap := NewAutoProxy()
 		ap.run()
@@ -36,8 +36,8 @@ type AutoProxy struct {
 // NewAutoProxy creates an AutoProxy
 func NewAutoProxy() *AutoProxy {
 	ap := &AutoProxy{direct: true}
-	ap.Direct = NewDirectProxy(ap.reconfigure)
-	ap.Chained = NewChainedProxy(ap.reconfigure)
+	ap.Direct = NewDirectProxy()
+	ap.Chained = NewChainedProxy()
 	return ap
 }
 
@@ -88,21 +88,32 @@ func (a *AutoProxy) run() {
 }
 
 // NewDirectProxy explicitly bypasses env variables and direclty dials out
-func NewDirectProxy(fun goproxy.ErrorHook) *goproxy.ProxyHttpServer {
+func NewDirectProxy() *goproxy.ProxyHttpServer {
 	proxy := goproxy.NewProxyHttpServer()
 	proxy.Tr.DialContext = nil
 	proxy.Tr.Proxy = nil
 	proxy.ConnectDial = nil
 	proxy.Verbose = true
-	proxy.Hook = fun
 	return proxy
 }
 
+/*
+rt := goproxy.RoundTripperFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Response, error) {
+	return custom.RoundTrip(req)
+})
+
+rp.OnRequest().HandleConnect(goproxy.AlwaysMitm)
+rp.OnRequest().DoFunc(
+	func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
+		ctx.RoundTripper = rt
+		return r, nil
+	})
+*/
+
 // NewChainedProxy dials out to chained proxy server
-func NewChainedProxy(fun goproxy.ErrorHook) *goproxy.ProxyHttpServer {
+func NewChainedProxy() *goproxy.ProxyHttpServer {
 	proxy := goproxy.NewProxyHttpServer()
 	proxy.Verbose = true
-	proxy.Hook = fun
 	proxy.Tr.Proxy = func(req *http.Request) (*url.URL, error) {
 		return url.Parse(config.HTTPProxy)
 	}
