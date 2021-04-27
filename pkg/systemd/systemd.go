@@ -10,9 +10,13 @@ import (
 	execute "github.com/alexellis/go-execute/pkg/v1"
 )
 
-func Enable(unit string) error {
+func Enable(unit string, user bool) error {
+	us := ""
+	if user {
+		us = "--user"
+	}
 	task := execute.ExecTask{Command: "systemctl",
-		Args:        []string{"enable", unit},
+		Args:        []string{"enable", us, unit},
 		StreamStdio: false,
 	}
 
@@ -28,9 +32,13 @@ func Enable(unit string) error {
 	return nil
 }
 
-func Start(unit string) error {
+func Start(unit string, user bool) error {
+	us := ""
+	if user {
+		us = "--user"
+	}
 	task := execute.ExecTask{Command: "systemctl",
-		Args:        []string{"start", unit},
+		Args:        []string{"start", us, unit},
 		StreamStdio: false,
 	}
 
@@ -64,7 +72,7 @@ func DaemonReload() error {
 	return nil
 }
 
-func InstallUnit(name string, tokens map[string]string) error {
+func InstallUnit(name string, tokens map[string]string, user bool) error {
 	if len(tokens["Cwd"]) == 0 {
 		return fmt.Errorf("key Cwd expected in tokens parameter")
 	}
@@ -83,7 +91,7 @@ func InstallUnit(name string, tokens map[string]string) error {
 		return err
 	}
 
-	err = writeUnit(name+".service", tpl.Bytes())
+	err = writeUnit(name+".service", tpl.Bytes(), user)
 
 	if err != nil {
 		return err
@@ -91,8 +99,12 @@ func InstallUnit(name string, tokens map[string]string) error {
 	return nil
 }
 
-func writeUnit(name string, data []byte) error {
-	f, err := os.Create(filepath.Join("/lib/systemd/system", name))
+func writeUnit(name string, data []byte, user bool) error {
+	unitpath := "/lib/systemd/system"
+	if user {
+		unitpath = "/lib/systemd/user"
+	}
+	f, err := os.Create(filepath.Join(unitpath, name))
 	if err != nil {
 		return err
 	}
