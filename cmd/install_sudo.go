@@ -7,7 +7,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/blunghamer/devproxy/pkg/systemd"
+	"github.com/blunghamer/systemd"
 	"github.com/spf13/cobra"
 )
 

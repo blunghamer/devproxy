@@ -30,10 +30,10 @@ func initConfig() {
 	toolname := "devproxy"
 	viper.SetConfigName(toolname)
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath(".")
 	viper.AddConfigPath(fmt.Sprintf("/etc/%v/", toolname))
-	viper.AddConfigPath(fmt.Sprintf("$HOME/.%v", toolname))
 	viper.AddConfigPath(fmt.Sprintf("$HOME/.config/%v", toolname))
+	viper.AddConfigPath(fmt.Sprintf("$HOME/.%v", toolname))
+	viper.AddConfigPath(".")
 
 	viper.AutomaticEnv()
 
