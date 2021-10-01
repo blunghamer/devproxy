@@ -23,4 +23,4 @@ jobs:
         goversion: "1.15"
         project_path: "./cmd/devproxy"
         binary_name: "devproxy"
-        extra_files: devproxy.yaml devproxy.service README.md
+        extra_files: README.md

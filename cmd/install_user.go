@@ -1,11 +1,15 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"os"
 	"path"
+	"strings"
+	"text/template"
 
+	"github.com/blunghamer/devproxy"
 	"github.com/blunghamer/systemd"
 
 	"github.com/spf13/cobra"
@@ -26,6 +30,11 @@ const userdevproxydir = ".config/devproxy"
 
 func runInstallUser(_ *cobra.Command, _ []string) error {
 
+	fmt.Print("Please enter your proxy username: ")
+	reader := bufio.NewReader(os.Stdin)
+	username, _ := reader.ReadString('\n')
+	username = strings.ReplaceAll(username, "\n", "")
+
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return err
@@ -35,9 +44,22 @@ func runInstallUser(_ *cobra.Command, _ []string) error {
 		return err
 	}
 
+	tmpl, err := template.ParseFS(devproxy.FS, "static/devproxy.yaml")
+	if err != nil {
+		return err
+	}
+
 	absConfig := path.Join(home, userdevproxydir, "devproxy.yaml")
-	if err := cp("devproxy.yaml", absConfig); err != nil {
-		log.Fatalf("Unable to copy devproxy.yaml to %v: %v", absConfig, err)
+
+	of, err := os.Create(absConfig)
+	if err != nil {
+		return err
+	}
+	defer of.Close()
+
+	err = tmpl.Execute(of, map[string]interface{}{"ProxyUser": username})
+	if err != nil {
+		log.Printf("Unable to write config to %v: %v", absConfig, err)
 		return err
 	}
 
@@ -51,9 +73,10 @@ func runInstallUser(_ *cobra.Command, _ []string) error {
 		return err
 	}
 
-	fmt.Println(`Check status with:
+	fmt.Printf(`Successfully installed, check status with:
   systemctl --user status devproxy
-  journalctl --user --user-unit devproxy --lines 100 -f`)
+  journalctl --user --user-unit devproxy --lines 100 -f
+  configuration in %v`, absConfig)
 
 	return nil
 }

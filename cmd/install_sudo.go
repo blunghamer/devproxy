@@ -6,8 +6,11 @@ import (
 	"log"
 	"os"
 	"path"
+	"path/filepath"
 
+	"github.com/blunghamer/devproxy"
 	"github.com/blunghamer/systemd"
+
 	"github.com/spf13/cobra"
 )
 
@@ -49,7 +52,13 @@ func runInstallSudo(_ *cobra.Command, _ []string) error {
 
 	log.Printf("Successfully installed binary %v to %v", binaryName, targetFolder)
 
-	if err := cp(serviceFile, serviceOut); err != nil {
+	src, err := devproxy.FS.Open(filepath.Join("static", serviceFile))
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+
+	if err := cpf(src, serviceOut); err != nil {
 		log.Printf("Unable to copy %v from %v to %v: %v", serviceFile, serviceFile, serviceOut, err)
 		return err
 	}
@@ -70,6 +79,19 @@ func binExists(folder, name string) error {
 		return fmt.Errorf("unable to stat %s, install this binary before continuing", findPath)
 	}
 	return nil
+}
+
+func cpf(source io.Reader, dest string) error {
+
+	out, err := os.Create(dest)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, source)
+
+	return err
 }
 
 func cp(source, dest string) error {
