@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"html/template"
 	"log"
 	"net"
 	"net/http"
@@ -8,7 +9,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/blunghamer/devproxy"
 	"github.com/elazarl/goproxy"
+	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 )
 
@@ -38,6 +41,16 @@ func NewAutoProxy() *AutoProxy {
 	ap := &AutoProxy{direct: true}
 	ap.Direct = NewDirectProxy()
 	ap.Chained = NewChainedProxy()
+
+	r := mux.NewRouter()
+	r.HandleFunc("/config", ap.ConfigHandler)
+	ap.Direct.NonproxyHandler = r
+	ap.Chained.NonproxyHandler = r
+
+	ap.Direct.Dec = func(err error) {
+		log.Println(err)
+	}
+
 	return ap
 }
 
@@ -73,7 +86,7 @@ func (a *AutoProxy) tryDirect() bool {
 		log.Println("no direct connect possible", err)
 		return false
 	}
-	log.Println("Direct HTTP Get out succes", rp.StatusCode)
+	log.Println("Direct HTTP Get out success", rp.StatusCode)
 	return true
 }
 
@@ -87,28 +100,24 @@ func (a *AutoProxy) run() {
 	}
 }
 
-// NewDirectProxy explicitly bypasses env variables and direclty dials out
+var tmpl *template.Template = template.Must(template.ParseFS(devproxy.FS, "static/config.html", "static/base.html"))
+
+func (a *AutoProxy) ConfigHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		log.Println("posted form")
+	}
+	tmpl.ExecuteTemplate(w, "base", config)
+}
+
+// NewDirectProxy explicitly bypasses env variables and directly dials out
 func NewDirectProxy() *goproxy.ProxyHttpServer {
 	proxy := goproxy.NewProxyHttpServer()
+	proxy.Verbose = true
 	proxy.Tr.DialContext = nil
 	proxy.Tr.Proxy = nil
 	proxy.ConnectDial = nil
-	proxy.Verbose = true
 	return proxy
 }
-
-/*
-rt := goproxy.RoundTripperFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Response, error) {
-	return custom.RoundTrip(req)
-})
-
-rp.OnRequest().HandleConnect(goproxy.AlwaysMitm)
-rp.OnRequest().DoFunc(
-	func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
-		ctx.RoundTripper = rt
-		return r, nil
-	})
-*/
 
 // NewChainedProxy dials out to chained proxy server
 func NewChainedProxy() *goproxy.ProxyHttpServer {
@@ -127,3 +136,16 @@ func NewChainedProxy() *goproxy.ProxyHttpServer {
 	}))
 	return proxy
 }
+
+/*
+rt := goproxy.RoundTripperFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Response, error) {
+	return custom.RoundTrip(req)
+})
+
+rp.OnRequest().HandleConnect(goproxy.AlwaysMitm)
+rp.OnRequest().DoFunc(
+	func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
+		ctx.RoundTripper = rt
+		return r, nil
+	})
+*/

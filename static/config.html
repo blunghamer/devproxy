@@ -1,0 +1,39 @@
+{{define "content"}}
+<h1>Devproxy Settings</h1>
+<form action="/config" method="post">
+    <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">App Name</label>
+        <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+            value="{{ .Appname }}">
+        <div id="emailHelp" class="form-text">Identifier for key lookup</div>
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Bind To Address</label>
+        <input type="text" class="form-control" id="exampleInputPassword1" value="{{ .Bindto }}">
+        <div id="emailHelp" class="form-text">Proxy Server Local Listen Address</div>
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Upstream Proxy User</label>
+        <input type="text" class="form-control" id="exampleInputPassword1" value="{{ .Proxyuser }}">
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Upstream HTTP Proxy</label>
+        <input type="text" class="form-control" id="exampleInputPassword1" value="{{ .HTTPProxy }}">
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Upstream HTTPS Proxy</label>
+        <input type="text" class="form-control" id="exampleInputPassword1" value="{{ .HTTPSProxy }}">
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">HTTP Test Url</label>
+        <input type="text" class="form-control" id="exampleInputPassword1" value="{{ .HTTPTest }}">
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">HTTPS Test Url</label>
+        <input type="text" class="form-control" id="exampleInputPassword1" value="{{ .HTTPSTest }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+{{end}}

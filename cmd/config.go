@@ -16,7 +16,7 @@ type DevProxyConfig struct {
 	Bindto        string
 	Appname       string
 	Proxyuser     string
-	Proxypassword string // it is not ok to place this in the config file use env variables or command line instread
+	Proxypassword string // it is not ok to place this in the config file use env variables or command line instead
 	HTTPProxy     string
 	HTTPSProxy    string
 

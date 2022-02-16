@@ -1,5 +1,6 @@
 bindto: 0.0.0.0:3128
 # required for keyring storage
+
 appname: dev-proxy
 # username for proxy
 proxyuser: {{ .ProxyUser }}
