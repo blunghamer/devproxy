@@ -2,8 +2,8 @@ module github.com/blunghamer/devproxy
 
 go 1.17
 
-// replace github.com/elazarl/goproxy => github.com/blunghamer/goproxy v0.0.0-20201107215641-a0ef4c6459e2
-replace github.com/elazarl/goproxy => /home/bernd/projects/goproxy
+replace github.com/elazarl/goproxy => github.com/blunghamer/goproxy v0.0.0-20220216224344-730e613bbc3f
+//replace github.com/elazarl/goproxy => /home/bernd/projects/goproxy
 
 require (
 	github.com/blunghamer/systemd v0.0.0-20210912195950-8fb6db6bf46b
